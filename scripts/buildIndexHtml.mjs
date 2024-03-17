@@ -20,7 +20,7 @@ import(uiJsRel).then((mod) => {
   const dom = new JSDOM(html);
   if (createStaticHtml.toLowerCase() == "true") {
     for (const component of mod.default) {
-      component.createHtml(dom.window.document);
+      component.createHtml(dom.window);
     }
   }
 

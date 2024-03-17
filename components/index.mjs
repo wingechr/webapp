@@ -7,15 +7,15 @@ class Component {
     this.element = null; // in init();
   }
 
-  createHtml(document) {
-    if (document.getElementById(this.id)) {
+  createHtml(window) {
+    if (window.document.getElementById(this.id)) {
       throw new Error(`Wlement already exists: ${this.id}`);
     }
-    const parent = document.getElementById(this.parentId);
+    const parent = window.document.getElementById(this.parentId);
     if (!parent) {
       throw new Error(`Parent element does not exist: ${this.parentId}`);
     }
-    const element = document.createElement(this.tag);
+    const element = window.document.createElement(this.tag);
     element.id = this.id;
 
     parent.appendChild(element);
@@ -25,18 +25,12 @@ class Component {
     return element;
   }
 
-  createStaticHtml(document) {
-    if (this.staticHtml) {
-      this._createHtmlElement(document);
-    }
-  }
-
-  init(document, app, createStaticHtml) {
+  init(window, app, createStaticHtml) {
     if (createStaticHtml) {
-      this.createStaticHtml(document);
+      this.createHtml(window);
     }
 
-    const element = document.getElementById(this.id);
+    const element = window.document.getElementById(this.id);
     this.element = element;
     const dataName = element.getAttribute("data-name");
     const getValue = this.getValue;
@@ -89,8 +83,8 @@ class IntInputComponent extends InputComponent {
     this.max = max;
   }
 
-  createHtml(document) {
-    let element = super.createHtml(document);
+  createHtml(window) {
+    let element = super.createHtml(window);
     element.type = "number";
     element.min = this.min;
     element.max = this.max;

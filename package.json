@@ -1,6 +1,6 @@
 {
   "name": "@wingechr/webapp",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "index.mjs",
   "author": "Christian Winger",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "webapp-build-html": "./scripts/buildIndexHtml.mjs"
   },
   "dependencies": {
+    "canvas": "^2.11.2",
     "jsdom": "^24.0.0"
   },
   "devDependencies": {

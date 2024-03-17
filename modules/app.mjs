@@ -29,7 +29,7 @@ class App {
     if (typeof window !== "undefined") {
       console_log("INIT UI");
       for (const component of ui) {
-        component.init(document, graph, createStaticHtml);
+        component.init(window, graph, createStaticHtml);
 
         // also bind storage
         if (component.dataName && component.getValue) {
