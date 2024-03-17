@@ -1,6 +1,6 @@
 {
   "name": "@wingechr/webapp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "index.mjs",
   "author": "Christian Winger",
   "license": "ISC",
@@ -18,7 +18,8 @@
   "dependencies": {
     "canvas": "^2.11.2",
     "glob": "^10.3.10",
-    "jsdom": "^24.0.0"
+    "jsdom": "^24.0.0",
+    "process": "^0.11.10"
   },
   "devDependencies": {
     "chai": "^5.1.0",

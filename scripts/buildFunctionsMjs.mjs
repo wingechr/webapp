@@ -4,109 +4,104 @@
 import fs from "fs";
 import path from "path";
 import {
-  getRelPath,
+  extractDivIds,
   getExports,
   loadFiles,
   findMjsFiles,
 } from "./utils/index.mjs";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-/**
- *
- * @param {function} func
- * @returns {array} [name, parameterNames]
- */
-function getFunctionInfo(func) {
-  // Get the name of the function
-  const name = func.name;
-
-  // Get the source code of the function
-  const functionSource = func.toString();
-
-  // Use regular expressions to parse parameter names
-  const parameterNames =
-    functionSource
-      .slice(functionSource.indexOf("(") + 1, functionSource.indexOf(")"))
-      .match(/([^\s,]+)/g) || [];
-
-  return [name, parameterNames];
-}
 
 /**
  *
  * @param {array} exports
- * @param {object} data
+ * @param {array} externalIds
  * @returns {array} exports
  */
-function sortExports(exports, data) {
-  let dataIds = new Set(Object.keys(data));
-  let todo = exports;
-  let done = [];
-  let maxDefer = todo.length; // no infinite iterations
-
-  // find function dependencies
+function sortExports(exports, externalIds) {
+  /* initialize nodes in tree */
+  externalIds = externalIds || [];
+  const tree = {};
+  const byId = {};
   for (const exp of exports) {
-    const [nameDef, dependencies] = getFunctionInfo(exp.object);
-    exp.dependencies = dependencies;
-    exp.nameDef = nameDef;
-    exp.id = exp.name == "default" ? exp.nameDef : exp.name;
+    const obj = exp.object;
+    const id = obj.id;
+    const parentId = obj.parentId;
+    if (tree[id]) {
+      throw new Error(`duplicate id ${id}`);
+    }
+    tree[id] = [];
+    byId[id] = exp;
   }
 
-  while (todo.length > 0) {
-    const exp = todo.shift(); // pop first element
-    /* if all dependencies are in dataIds: push on results,
-    otherwiese: put at end andcheck later
-    */
-
-    let isOk = true;
-    for (const d of exp.dependencies) {
-      if (!dataIds.has(d)) {
-        //console.log(`dependency missing for ${exp.id}: ${d}`);
-        isOk = false;
-        break;
-      }
+  for (const id of externalIds) {
+    if (tree[id]) {
+      throw new Error(`duplicate id ${id}`);
     }
+    tree[id] = [];
+  }
 
-    if (isOk) {
-      done.push(exp);
-      //console.log(`adding ${exp.id}`);
-      maxDefer = todo.length;
-      dataIds.add(exp.id);
-    } else {
-      //console.log(`deferring ${exp.id}`);
-      todo.push(exp);
-    }
-
-    //console.log(maxDefer);
-    // prevent infinite loop in dependency cycles
-    if (maxDefer < 0) {
+  /* link nodes, find externals */
+  for (const exp of exports) {
+    const obj = exp.object;
+    const id = obj.id;
+    const parentId = obj.parentId;
+    if (!tree[parentId]) {
       throw new Error(
-        `Infinite loop: Dependency cycle: ${JSON.stringify(todo)}`,
+        `Not defined external id: ${parentId} not in ${externalIds}`,
       );
-    } else {
-      maxDefer -= 1;
+    }
+    tree[parentId].push(id);
+  }
+
+  // walk through tree and create
+  // sorted array of ids in orderedIds
+  const orderedIds = [];
+  /**
+   *
+   * @param {array} ids
+   */
+  function walk(ids) {
+    // sort
+    ids.sort();
+    for (const id of ids) {
+      // save id (except externals)
+      if (externalIds.indexOf(id) == -1) {
+        orderedIds.push(id);
+      }
+      // recursion
+      if (!tree[id]) {
+        throw new Error(`Invalid id: ${id}`);
+      }
+      walk(tree[id]);
     }
   }
-  return done;
+
+  walk(externalIds);
+
+  // return objects
+  const result = orderedIds.map((id) => byId[id]);
+
+  return result;
 }
 
 /**
  *
  * @param {array} items
- * @param {string}filepath
+ * @param {string} filepath
  */
 function save(items, filepath) {
   let imports = [];
   let exports = [];
-  for (const it of items) {
-    imports.push(`import {${it.name} as ${it.id}} from "${it.relPath}";`);
-    const deps = JSON.stringify(it.dependencies);
-    exports.push(
-      `{ name: "${it.id}", dependencies: ${deps}, callable: ${it.id} }`,
-    );
+  for (const i in items) {
+    const it = items[i];
+    const filepathRel = it.relPath;
+    const basename = path
+      .basename(filepathRel)
+      .replace(".mjs", "")
+      .replace("-", "_");
+    const nameImp = it.name;
+    const name = `comp_${i}_${basename}_${nameImp}`;
+    imports.push(`import {${nameImp} as ${name}} from "${filepathRel}";`);
+    exports.push(name);
   }
   const text =
     imports.join("\n") + "\nexport default [\n" + exports.join(",\n") + "\n];";
@@ -114,17 +109,15 @@ function save(items, filepath) {
   fs.writeFileSync(filepath, text);
 }
 
-const [_node, _script, inputDir, dataIn, jsOut] = process.argv;
+const [_node, _script, inputDir, indexHtmlPath, jsOut] = process.argv;
 
 const outDir = path.dirname(path.resolve(jsOut));
-const relDataPath = getRelPath(__dirname, dataIn);
+const externalDIvIds = extractDivIds(indexHtmlPath);
 
-import(relDataPath).then((modData) => {
-  findMjsFiles(inputDir)
-    .then((x) => x.sort())
-    .then((x) => x.filter((f) => path.resolve(f) != path.resolve(jsOut)))
-    .then((x) => loadFiles(x))
-    .then((x) => getExports(x, outDir))
-    .then((x) => sortExports(x, modData.default))
-    .then((exps) => save(exps, jsOut));
-});
+findMjsFiles(inputDir)
+  .then((x) => x.sort())
+  .then((x) => x.filter((f) => path.resolve(f) != path.resolve(jsOut)))
+  .then((x) => loadFiles(x))
+  .then((x) => getExports(x, outDir))
+  .then((x) => sortExports(x, externalDIvIds))
+  .then((exps) => save(exps, jsOut));

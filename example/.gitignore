@@ -1,0 +1,5 @@
+# auto created by npm run build-static
+index.html
+data/index.mjs
+ui/index.mjs
+functions/index.mjs
