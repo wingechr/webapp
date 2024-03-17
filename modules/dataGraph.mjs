@@ -120,8 +120,8 @@ export class DataGraph {
   /**
    *
    * @param {string} name
-   * @param {array} dependencies
-   * @param {function} callable
+   * @param {Array} dependencies
+   * @param {Function} callable
    */
   addFunction(name, dependencies, callable) {
     if (!dependencies) {

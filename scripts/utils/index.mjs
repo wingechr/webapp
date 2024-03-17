@@ -19,12 +19,23 @@ function findMjsFiles(directory) {
   return filePaths;
 }
 
+/**
+ *
+ * @param {string} dirFrom
+ * @param {string} filePath
+ * @returns {string}
+ */
 function getRelPath(dirFrom, filePath) {
   return (
     "./" + path.relative(dirFrom, path.resolve(filePath)).replace(/\\/g, "/")
   );
 }
 
+/**
+ *
+ * @param {array} filePaths
+ * @returns {Promise}
+ */
 function loadFiles(filePaths) {
   return Promise.all(
     filePaths.map((fp) => {
@@ -34,6 +45,12 @@ function loadFiles(filePaths) {
   );
 }
 
+/**
+ *
+ * @param {array} files_modules
+ * @param {string} outDir
+ * @returns {array}
+ */
 function getExports(files_modules, outDir) {
   const exports = [];
   for (const [fp, mod] of files_modules) {
@@ -45,6 +62,11 @@ function getExports(files_modules, outDir) {
   return exports;
 }
 
+/**
+ *
+ * @param {string} filepathHtml
+ * @returns {array}
+ */
 function extractDivIds(filepathHtml) {
   // Read the HTML file
   const html = fs.readFileSync(filepathHtml, "utf8");

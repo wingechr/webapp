@@ -39,7 +39,7 @@ class App {
         // also bind storage
         if (component.dataName && component.getValue) {
           this.graph.addCallback([component.dataName], (value) =>
-            saveLocalStorage(component.dataName, value)
+            saveLocalStorage(component.dataName, value),
           );
         }
       }

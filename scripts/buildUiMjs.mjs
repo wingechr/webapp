@@ -10,6 +10,12 @@ import {
   findMjsFiles,
 } from "./utils/index.mjs";
 
+/**
+ *
+ * @param {array} exports
+ * @param {array} externalIds
+ * @returns {array} exports
+ */
 function sortExports(exports, externalIds) {
   /* initialize nodes in tree */
   externalIds = externalIds || [];
@@ -45,6 +51,10 @@ function sortExports(exports, externalIds) {
   // walk through tree and create
   // sorted array of ids in orderedIds
   const orderedIds = [];
+  /**
+   *
+   * @param {array} ids
+   */
   function walk(ids) {
     // sort
     ids.sort();
@@ -66,6 +76,11 @@ function sortExports(exports, externalIds) {
   return result;
 }
 
+/**
+ *
+ * @param {array} items
+ * @param {string} filepath
+ */
 function save(items, filepath) {
   let imports = [];
   let exports = [];

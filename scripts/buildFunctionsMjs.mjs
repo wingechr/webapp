@@ -14,6 +14,11 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ *
+ * @param {function} func
+ * @returns {array} [name, parameterNames]
+ */
 function getFunctionInfo(func) {
   // Get the name of the function
   const name = func.name;
@@ -30,6 +35,12 @@ function getFunctionInfo(func) {
   return [name, parameterNames];
 }
 
+/**
+ *
+ * @param {array} exports
+ * @param {object} data
+ * @returns {array} exports
+ */
 function sortExports(exports, data) {
   let dataIds = new Set(Object.keys(data));
   let todo = exports;
@@ -82,6 +93,11 @@ function sortExports(exports, data) {
   return done;
 }
 
+/**
+ *
+ * @param {array} items
+ * @param {string}filepath
+ */
 function save(items, filepath) {
   let imports = [];
   let exports = [];
