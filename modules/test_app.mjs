@@ -14,10 +14,10 @@ describe("App", () => {
       callable: (p1) => p1 * p1,
     },
   ];
-  const ui = [new LabelOutputComponent("main", "id1", "f1")];
+  const uiComponents = [new LabelOutputComponent("main", "id1", "f1")];
 
   it("should work without window", () => {
-    const app = new App(data, functions, ui);
+    const app = new App(data, functions);
 
     // init not called yet
     assert.equal(app.graph.getValue("f1"), undefined);
@@ -28,11 +28,11 @@ describe("App", () => {
   });
 
   it("should work with window", () => {
-    const app = new App(data, functions, ui, true);
+    const app = new App(data, functions);
 
     const dom = new JSDOM('<html><body id="main"></body></html>');
     global.localStorage = new Storage(null, { strict: true });
-    app.init(dom.window);
+    app.init(dom.window, uiComponents, true);
 
     assert.equal(app.graph.getValue("f1"), 2 * 2);
   });

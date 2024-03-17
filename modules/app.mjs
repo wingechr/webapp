@@ -8,10 +8,9 @@ import {
 import { DataGraph } from "./dataGraph.mjs";
 
 class App {
-  constructor(data, functions, ui, createStaticHtml) {
+  constructor(data, functions) {
     this.defaultData = data;
-    this.ui = ui;
-    this.createStaticHtml = createStaticHtml;
+    this.uiComponents = {};
 
     /* create app without UI */
     console_log("INIT APP");
@@ -28,17 +27,19 @@ class App {
     }
   }
 
-  init(window) {
+  init(window, uiComponents, createStaticHtml) {
     let initialData = this.defaultData;
     if (window) {
       console_log("INIT UI");
-      for (const component of this.ui) {
-        component.init(window, this.graph, this.createStaticHtml);
+      for (const component of uiComponents) {
+        this.uiComponents[component.id] = this.uiComponents;
+
+        component.init(window, this.graph, createStaticHtml);
 
         // also bind storage
         if (component.dataName && component.getValue) {
           this.graph.addCallback([component.dataName], (value) =>
-            saveLocalStorage(component.dataName, value),
+            saveLocalStorage(component.dataName, value)
           );
         }
       }
