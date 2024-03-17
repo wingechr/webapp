@@ -1,0 +1,29 @@
+{
+  "name": "@wingechr/webapp",
+  "version": "0.0.1",
+  "main": "index.mjs",
+  "author": "Christian Winger",
+  "license": "ISC",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wingechr/webapp"
+  },
+  "bin": {
+    "webapp-build-data": "./scripts/buildDataMjs.mjs",
+    "webapp-build-functions": "./scripts/buildFunctionsMjs.mjs",
+    "webapp-build-ui": "./scripts/buildUiMjs.mjs",
+    "webapp-build-html": "./scripts/buildIndexHtml.mjs"
+  },
+  "dependencies": {
+    "jsdom": "^24.0.0"
+  },
+  "devDependencies": {
+    "chai": "^5.1.0",
+    "chai-almost": "^1.0.1",
+    "mocha": "^10.3.0"
+  },
+  "scripts": {
+    "test": "npx mocha **/*.mjs"
+  }
+}
