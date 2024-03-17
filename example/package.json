@@ -1,0 +1,28 @@
+{
+  "name": "",
+  "version": "0.0.0",
+  "license": "ICS",
+  "type": "module",
+  "browserslist": "> 0.5%, last 5 versions, not dead",
+  "source": "src/index.html",
+  "scripts": {
+    "clean": "rm -rf dist build .parcel-cache src/data/index.json src/data/index.mjs src/functions/index.mjs src/ui/index.mjs src/index.html",
+    "test": "npx mocha src/**/test*.mjs",
+    "build-data-js": "npx webapp-build-data src/data/index.json src/data/index.mjs && prettier -w src/data/index.mjs",
+    "build-functions-js": "npx webapp-build-functions src/functions src/data/index.mjs src/functions/index.mjs && prettier -w src/functions/index.mjs",
+    "build-ui-js": "npx webapp-build-ui src/ui src/ui/index.html src/ui/index.mjs && prettier -w src/ui/index.mjs",
+    "build-index-html": "npx webapp-build-html src/ui/index.mjs src/ui/index.html src/index.html true && prettier -w src/index.html",
+    "build-static": "npm run build-data-json && npm run build-data-js && npm run build-functions-js && npm run build-ui-js && npm run build-index-html",
+    "serve": "npx parcel serve --dist-dir build",
+    "build": "npm run clean && npm run build-static && npx parcel build --no-cache --no-scope-hoist --no-source-maps --dist-dir dist --public-url ./"
+  },
+  "dependencies": {
+    "@wingechr/webapp": "latest"
+  },
+  "devDependencies": {
+    "chai": "^5.1.0",
+    "chai-almost": "^1.0.1",
+    "mocha": "^10.3.0",
+    "parcel": "^2.12.0"
+  }
+}
