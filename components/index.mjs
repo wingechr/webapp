@@ -37,13 +37,13 @@ class Component {
 
     if (dataName && getValue) {
       element.addEventListener("change", (_event) => {
-        app.setValue(dataName, getValue(element));
+        app.setValue(dataName, getValue(this));
       });
     }
 
     const setValue = this.setValue;
     if (dataName && setValue) {
-      app.addCallback([dataName], (value) => setValue(element, value));
+      app.addCallback([dataName], (value) => setValue(this, value));
     }
 
     return this;
@@ -51,14 +51,14 @@ class Component {
 }
 
 class OutputComponent extends Component {
-  setValue(element, value) {
-    element.value = value;
+  setValue(self, value) {
+    self.element.value = value;
   }
 }
 
 class InputComponent extends OutputComponent {
-  getValue(element) {
-    return element.value;
+  getValue(self) {
+    return self.element.value;
   }
 }
 
@@ -68,8 +68,8 @@ class LabelOutputComponent extends OutputComponent {
     super(parentId, id, dataName, tag);
   }
 
-  setValue(element, value) {
-    element.textContent = value.toLocaleString("de-DE", {
+  setValue(self, value) {
+    self.element.textContent = value.toLocaleString("de-DE", {
       useGrouping: true,
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
@@ -93,15 +93,15 @@ class IntInputComponent extends InputComponent {
     return element;
   }
 
-  getValue(element) {
-    return parseInt(super.getValue(element));
+  getValue(self) {
+    return parseInt(super.getValue(self));
   }
 
-  setValue(element, value) {
+  setValue(self, value) {
     // clip to range
-    value = Math.min(value, parseInt(element.max));
-    value = Math.max(value, parseInt(element.min));
-    return super.setValue(element, value);
+    value = Math.min(value, parseInt(self.element.max));
+    value = Math.max(value, parseInt(self.element.min));
+    return super.setValue(self, value);
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@wingechr/webapp",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "index.mjs",
   "author": "Christian Winger",
   "license": "ISC",
