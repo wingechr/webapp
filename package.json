@@ -1,6 +1,6 @@
 {
   "name": "@wingechr/webapp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.mjs",
   "author": "Christian Winger",
   "license": "ISC",
@@ -24,6 +24,7 @@
     "mocha": "^10.3.0"
   },
   "scripts": {
-    "test": "npx mocha **/*.mjs"
+    "test": "npx mocha **/test*.mjs",
+    "publish": "npm publish --access public"
   }
 }
