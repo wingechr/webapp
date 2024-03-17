@@ -14,7 +14,9 @@ describe("App", () => {
       callable: (p1) => p1 * p1,
     },
   ];
-  const uiComponents = [new LabelOutputComponent("main", "id1", "f1")];
+  const uiComponents = [
+    new LabelOutputComponent("main", "id1", "my-class", "f1"),
+  ];
 
   it("should work without window", () => {
     const app = new App(data, functions);

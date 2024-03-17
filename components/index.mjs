@@ -1,10 +1,17 @@
 class Component {
-  constructor(parentId, id, dataName, tag) {
+  constructor(parentId, tag, id, className, dataName, properties, attributes) {
     this.parentId = parentId;
     this.id = id;
     this.dataName = dataName;
     this.tag = tag || "div";
     this.element = null; // in init();
+    this.properties = properties || {};
+    this.attributes = attributes || {};
+    this.properties["id"] = id;
+    this.properties["className"] = className;
+    if (dataName) {
+      this.attributes["data-name"] = dataName;
+    }
   }
 
   createHtml(window) {
@@ -15,13 +22,21 @@ class Component {
     if (!parent) {
       throw new Error(`Parent element does not exist: ${this.parentId}`);
     }
-    const element = window.document.createElement(this.tag);
-    element.id = this.id;
 
-    parent.appendChild(element);
-    if (this.dataName) {
-      element.setAttribute("data-name", this.dataName);
+    // create element
+    const element = window.document.createElement(this.tag);
+
+    // set properties and attributes
+    for (const [key, val] of Object.entries(this.properties)) {
+      element[key] = val;
     }
+    for (const [key, val] of Object.entries(this.attributes)) {
+      element.setAttribute(key, val);
+    }
+
+    // add to parent
+    parent.appendChild(element);
+
     return element;
   }
 
@@ -63,9 +78,9 @@ class InputComponent extends OutputComponent {
 }
 
 class LabelOutputComponent extends OutputComponent {
-  constructor(parentId, id, dataName) {
+  constructor(parentId, id, className, dataName) {
     const tag = "label";
-    super(parentId, id, dataName, tag);
+    super(parentId, tag, id, className, dataName);
   }
 
   setValue(self, value) {
@@ -78,9 +93,9 @@ class LabelOutputComponent extends OutputComponent {
 }
 
 class IntInputComponent extends InputComponent {
-  constructor(parentId, id, dataName, min, max) {
+  constructor(parentId, id, className, dataName, min, max) {
     const tag = "input";
-    super(parentId, id, dataName, tag);
+    super(parentId, tag, id, className, dataName, { min: min, max: max });
     this.min = min;
     this.max = max;
   }
@@ -99,8 +114,8 @@ class IntInputComponent extends InputComponent {
 
   setValue(self, value) {
     // clip to range
-    value = Math.min(value, parseInt(self.element.max));
-    value = Math.max(value, parseInt(self.element.min));
+    value = Math.min(value, self.max);
+    value = Math.max(value, self.min);
     return super.setValue(self, value);
   }
 }
