@@ -45,6 +45,8 @@ class Component {
     if (dataName && setValue) {
       app.addCallback([dataName], (value) => setValue(element, value));
     }
+
+    return this;
   }
 }
 

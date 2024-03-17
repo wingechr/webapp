@@ -32,7 +32,7 @@ class App {
     let initialData = this.defaultData;
     if (window) {
       console_log("INIT UI");
-      for (const component of ui) {
+      for (const component of this.ui) {
         component.init(window, this.graph, this.createStaticHtml);
 
         // also bind storage
@@ -50,6 +50,8 @@ class App {
     console_log("INIT DATA");
     this.graph.setData(initialData);
     console_log("READY");
+
+    return this;
   }
 }
 

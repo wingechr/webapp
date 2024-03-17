@@ -1,6 +1,6 @@
 {
   "name": "@wingechr/webapp",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "index.mjs",
   "author": "Christian Winger",
   "license": "ISC",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "chai": "^5.1.0",
     "chai-almost": "^1.0.1",
+    "dom-storage": "^2.1.0",
     "mocha": "^10.3.0"
   },
   "scripts": {
