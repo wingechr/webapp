@@ -1,17 +1,18 @@
 {
   "name": "@wingechr/webapp",
-  "version": "0.0.7",
+  "version": "0.1.2",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "@wingechr/webapp",
-      "version": "0.0.7",
+      "version": "0.1.2",
       "license": "ISC",
       "dependencies": {
         "canvas": "^2.11.2",
         "glob": "^10.3.10",
-        "jsdom": "^24.0.0"
+        "jsdom": "^24.0.0",
+        "process": "^0.11.10"
       },
       "bin": {
         "webapp-build-data": "scripts/buildDataMjs.mjs",
@@ -1438,9 +1439,7 @@
       "dev": true,
       "hasInstallScript": true,
       "optional": true,
-      "os": [
-        "darwin"
-      ],
+      "os": ["darwin"],
       "engines": {
         "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
       }
@@ -2410,6 +2409,14 @@
       },
       "engines": {
         "node": ">=6.0.0"
+      }
+    },
+    "node_modules/process": {
+      "version": "0.11.10",
+      "resolved": "https://registry.npmjs.org/process/-/process-0.11.10.tgz",
+      "integrity": "sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==",
+      "engines": {
+        "node": ">= 0.6.0"
       }
     },
     "node_modules/psl": {
@@ -4940,6 +4947,11 @@
       "requires": {
         "fast-diff": "^1.1.2"
       }
+    },
+    "process": {
+      "version": "0.11.10",
+      "resolved": "https://registry.npmjs.org/process/-/process-0.11.10.tgz",
+      "integrity": "sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A=="
     },
     "psl": {
       "version": "1.9.0",
