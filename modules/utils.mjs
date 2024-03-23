@@ -51,7 +51,7 @@ function getInitialDataWithStorage(defaultData) {
 
 /**
  *
- * @param {*} key
+ * @param {string} key
  * @param {*} value
  */
 function saveLocalStorage(key, value) {

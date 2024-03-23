@@ -27,7 +27,6 @@ class Component {
     this.dataName = dataName;
     this.eventName = eventName || "change";
     this.tag = tag || "div";
-    this.element = null; // in init();
     this.properties = properties || {};
     this.attributes = attributes || {};
     this.properties["id"] = id;
@@ -35,6 +34,10 @@ class Component {
     if (dataName) {
       this.attributes[nameAttributeName] = dataName;
     }
+    /**
+     * @type {HTMLElement}
+     */
+    this.element = null; // in init();
   }
 
   /**

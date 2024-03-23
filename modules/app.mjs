@@ -8,6 +8,11 @@ import {
 import { DataGraph } from "./dataGraph.mjs";
 
 class App {
+  /**
+   *
+   * @param {object} data
+   * @param {array} functions
+   */
   constructor(data, functions) {
     this.defaultData = data;
     this.uiComponents = {};
@@ -27,14 +32,20 @@ class App {
     }
   }
 
-  init(window, uiComponents, createStaticHtml) {
+  /**
+   * @param {Window} window
+   * @param {array} uiComponents
+   * @param {boolean} createDynamicHtml
+   * @returns {App}
+   */
+  init(window, uiComponents, createDynamicHtml) {
     let initialData = this.defaultData;
     if (window) {
       console_log("INIT UI");
       for (const component of uiComponents) {
         this.uiComponents[component.id] = this.uiComponents;
 
-        component.init(window, this.graph, createStaticHtml);
+        component.init(window, this.graph, createDynamicHtml);
 
         // also bind storage
         if (component.dataName && component.getValue) {
