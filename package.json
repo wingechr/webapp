@@ -1,13 +1,13 @@
 {
   "name": "@wingechr/webapp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "index.mjs",
   "author": "Christian Winger",
   "license": "ISC",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wingechr/webapp"
+    "url": "git+https://github.com/wingechr/webapp.git"
   },
   "bin": {
     "webapp-build-data": "./scripts/buildDataMjs.mjs",

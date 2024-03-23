@@ -39,6 +39,10 @@ function sortExports(exports, externalIds) {
     tree[id] = [];
     byId[id] = exp;
   }
+  // empty child nodesfor external ids
+  for (const id of externalIds) {
+    tree[id] = [];
+  }
 
   /* link nodes, find externals */
   for (const exp of exports) {
@@ -46,12 +50,9 @@ function sortExports(exports, externalIds) {
     const id = obj.id;
     const parentId = obj.parentId;
     if (!tree[parentId]) {
-      if (externalIds.indexOf(parentId) == -1) {
-        throw new Error(
-          `Not defined external id: ${parentId} not in: ${externalIds}`,
-        );
-      }
-      tree[parentId] = [];
+      throw new Error(
+        `Not defined external id: ${parentId} not in: ${externalIds}`,
+      );
     }
     tree[parentId].push(id);
   }
