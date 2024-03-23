@@ -1,8 +1,31 @@
+const nameAttributeName = "data-name";
+
 class Component {
-  constructor(parentId, tag, id, className, dataName, properties, attributes) {
+  /**
+   *
+   * @param {string} parentId
+   * @param {string} tag
+   * @param {string} id
+   * @param {string} className
+   * @param {string} dataName
+   * @param {object} properties
+   * @param {object} attributes
+   * @param {string} eventName
+   */
+  constructor(
+    parentId,
+    tag,
+    id,
+    className,
+    dataName,
+    properties,
+    attributes,
+    eventName,
+  ) {
     this.parentId = parentId;
     this.id = id;
     this.dataName = dataName;
+    this.eventName = eventName || "change";
     this.tag = tag || "div";
     this.element = null; // in init();
     this.properties = properties || {};
@@ -10,7 +33,7 @@ class Component {
     this.properties["id"] = id;
     this.properties["className"] = className;
     if (dataName) {
-      this.attributes["data-name"] = dataName;
+      this.attributes[nameAttributeName] = dataName;
     }
   }
 
@@ -59,11 +82,11 @@ class Component {
 
     const element = window.document.getElementById(this.id);
     this.element = element;
-    const dataName = element.getAttribute("data-name");
+    const dataName = element.getAttribute(nameAttributeName);
     const getValue = this.getValue;
 
-    if (dataName && getValue) {
-      element.addEventListener("change", (_event) => {
+    if (dataName && getValue && this.eventName) {
+      element.addEventListener(this.eventName, (_event) => {
         app.setValue(dataName, getValue(this));
       });
     }
