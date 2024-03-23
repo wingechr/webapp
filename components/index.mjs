@@ -14,6 +14,11 @@ class Component {
     }
   }
 
+  /**
+   *
+   * @param {Window} window
+   * @returns {HTMLElement}
+   */
   createHtml(window) {
     if (window.document.getElementById(this.id)) {
       throw new Error(`Wlement already exists: ${this.id}`);
@@ -40,6 +45,13 @@ class Component {
     return element;
   }
 
+  /**
+   *
+   * @param {Window} window
+   * @param {App} app
+   * @param {boolean} createStaticHtml
+   * @returns {Component}
+   */
   init(window, app, createStaticHtml) {
     if (createStaticHtml) {
       this.createHtml(window);
@@ -66,12 +78,22 @@ class Component {
 }
 
 class OutputComponent extends Component {
+  /**
+   *
+   * @param {Component} self
+   * @param {*} value
+   */
   setValue(self, value) {
     self.element.value = value;
   }
 }
 
 class InputComponent extends OutputComponent {
+  /**
+   *
+   * @param {Component} self
+   * @returns {*}
+   */
   getValue(self) {
     return self.element.value;
   }

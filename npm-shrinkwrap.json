@@ -1,12 +1,12 @@
 {
   "name": "@wingechr/webapp",
-  "version": "0.1.2",
+  "version": "0.2.3",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "@wingechr/webapp",
-      "version": "0.1.2",
+      "version": "0.2.3",
       "license": "ISC",
       "dependencies": {
         "canvas": "^2.11.2",
