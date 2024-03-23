@@ -75,11 +75,11 @@ class Component {
    *
    * @param {Window} window
    * @param {App} app
-   * @param {boolean} createStaticHtml
+   * @param {boolean} createDynamicHtml
    * @returns {Component}
    */
-  init(window, app, createStaticHtml) {
-    if (createStaticHtml) {
+  init(window, app, createDynamicHtml) {
+    if (createDynamicHtml) {
       this.createHtml(window);
     }
 
