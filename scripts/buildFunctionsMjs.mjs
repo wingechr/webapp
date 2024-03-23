@@ -1,86 +1,99 @@
 #!/usr/bin/env node
 "use strict";
 
-import fs from "fs";
+import { fileURLToPath } from "url";
 import path from "path";
 import {
-  extractDivIds,
   getExports,
   loadFiles,
   findMjsFiles,
+  writeFile,
+  getRelPath,
 } from "./utils/index.mjs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+/**
+ *
+ * @param {function} func
+ * @returns {array} [name, parameterNames]
+ */
+function getFunctionInfo(func) {
+  // Get the name of the function
+  const name = func.name;
+
+  // Get the source code of the function
+  const functionSource = func.toString();
+
+  // Use regular expressions to parse parameter names
+  const parameterNames =
+    functionSource
+      .slice(functionSource.indexOf("(") + 1, functionSource.indexOf(")"))
+      .match(/([^\s,]+)/g) || [];
+
+  return [name, parameterNames];
+}
 
 /**
  *
  * @param {array} exports
- * @param {array} externalIds
+ * @param {object} data
  * @returns {array} exports
  */
-function sortExports(exports, externalIds) {
-  /* initialize nodes in tree */
-  externalIds = externalIds || [];
-  const tree = {};
-  const byId = {};
+function sortExports(exports, data) {
+  let dataIds = new Set(Object.keys(data));
+  let todo = exports;
+  let done = [];
+  let maxDefer = todo.length; // no infinite iterations
+
+  console.log("Sorting functions...");
+
+  // find function dependencies
   for (const exp of exports) {
-    const obj = exp.object;
-    const id = obj.id;
-    const parentId = obj.parentId;
-    if (tree[id]) {
-      throw new Error(`duplicate id ${id}`);
-    }
-    tree[id] = [];
-    byId[id] = exp;
+    const [nameDef, dependencies] = getFunctionInfo(exp.object);
+    exp.dependencies = dependencies;
+    exp.nameDef = nameDef;
+    exp.id = exp.name == "default" ? exp.nameDef : exp.name;
   }
 
-  for (const id of externalIds) {
-    if (tree[id]) {
-      throw new Error(`duplicate id ${id}`);
-    }
-    tree[id] = [];
-  }
+  while (todo.length > 0) {
+    const exp = todo.shift(); // pop first element
+    /* if all dependencies are in dataIds: push on results,
+    otherwiese: put at end andcheck later
+    */
 
-  /* link nodes, find externals */
-  for (const exp of exports) {
-    const obj = exp.object;
-    const id = obj.id;
-    const parentId = obj.parentId;
-    if (!tree[parentId]) {
+    let isOk = true;
+    for (const d of exp.dependencies) {
+      if (!dataIds.has(d)) {
+        //console.log(`dependency missing for ${exp.id}: ${d}`);
+        isOk = false;
+        break;
+      }
+    }
+
+    if (isOk) {
+      console.log(`${exp.id}(${exp.dependencies})`);
+      done.push(exp);
+      //console.log(`adding ${exp.id}`);
+      maxDefer = todo.length;
+      dataIds.add(exp.id);
+    } else {
+      //console.log(`deferring ${exp.id}`);
+      todo.push(exp);
+    }
+
+    //console.log(maxDefer);
+    // prevent infinite loop in dependency cycles
+    if (maxDefer < 0) {
       throw new Error(
-        `Not defined external id: ${parentId} not in ${externalIds}`,
+        `Infinite loop: Dependency cycle: ${JSON.stringify(todo)}`,
       );
-    }
-    tree[parentId].push(id);
-  }
-
-  // walk through tree and create
-  // sorted array of ids in orderedIds
-  const orderedIds = [];
-  /**
-   *
-   * @param {array} ids
-   */
-  function walk(ids) {
-    // sort
-    ids.sort();
-    for (const id of ids) {
-      // save id (except externals)
-      if (externalIds.indexOf(id) == -1) {
-        orderedIds.push(id);
-      }
-      // recursion
-      if (!tree[id]) {
-        throw new Error(`Invalid id: ${id}`);
-      }
-      walk(tree[id]);
+    } else {
+      maxDefer -= 1;
     }
   }
-
-  walk(externalIds);
-
-  // return objects
-  const result = orderedIds.map((id) => byId[id]);
-
-  return result;
+  return done;
 }
 
 /**
@@ -106,18 +119,19 @@ function save(items, filepath) {
   const text =
     imports.join("\n") + "\nexport default [\n" + exports.join(",\n") + "\n];";
 
-  fs.writeFileSync(filepath, text);
+  writeFile(filepath, text);
 }
 
-const [_node, _script, inputDir, indexHtmlPath, jsOut] = process.argv;
-
+const [_node, _script, inputDir, jsData, jsOut] = process.argv;
+const jsDataRel = getRelPath(__dirname, jsData);
 const outDir = path.dirname(path.resolve(jsOut));
-const externalDIvIds = extractDivIds(indexHtmlPath);
 
-findMjsFiles(inputDir)
-  .then((x) => x.sort())
-  .then((x) => x.filter((f) => path.resolve(f) != path.resolve(jsOut)))
-  .then((x) => loadFiles(x))
-  .then((x) => getExports(x, outDir))
-  .then((x) => sortExports(x, externalDIvIds))
-  .then((exps) => save(exps, jsOut));
+import(jsDataRel).then((modData) => {
+  findMjsFiles(inputDir)
+    .then((x) => x.sort())
+    .then((x) => x.filter((f) => path.resolve(f) != path.resolve(jsOut)))
+    .then((x) => loadFiles(x))
+    .then((x) => getExports(x, outDir))
+    .then((x) => sortExports(x, modData.default))
+    .then((exps) => save(exps, jsOut));
+});

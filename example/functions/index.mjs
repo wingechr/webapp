@@ -1,10 +1,10 @@
-import { default as f91 } from "./f_91.mjs";
-import { f2 as f2 } from "./a/f2.mjs";
-import { f2x as f2x } from "./a/f2.mjs";
-import { f1a as f1a } from "./f1a.mjs";
+import { default as comp_0_f_91_default } from "./f_91.mjs";
+import { f2 as comp_1_f2_f2 } from "./a/f2.mjs";
+import { f2x as comp_2_f2_f2x } from "./a/f2.mjs";
+import { f1a as comp_3_f1a_f1a } from "./f1a.mjs";
 export default [
-  { name: "f91", dependencies: ["p1", "p2"], callable: f91 },
-  { name: "f2", dependencies: ["p1", "f91"], callable: f2 },
-  { name: "f2x", dependencies: ["p1", "f2"], callable: f2x },
-  { name: "f1a", dependencies: ["p1", "f91"], callable: f1a },
+  comp_0_f_91_default,
+  comp_1_f2_f2,
+  comp_2_f2_f2x,
+  comp_3_f1a_f1a,
 ];
