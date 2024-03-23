@@ -112,9 +112,12 @@ function save(items, filepath) {
       .replace(".mjs", "")
       .replace("-", "_");
     const nameImp = it.name;
-    const name = `comp_${i}_${basename}_${nameImp}`;
+    const name = `comp_${i}_${basename}_${it.id}`;
     imports.push(`import {${nameImp} as ${name}} from "${filepathRel}";`);
-    exports.push(name);
+    exports.push(
+      // eslint-disable-next-line
+      `{name: "${name}", dependencies: ${JSON.stringify(it.dependencies)}, callable: ${name}}`
+    );
   }
   const text =
     imports.join("\n") + "\nexport default [\n" + exports.join(",\n") + "\n];";
