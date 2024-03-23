@@ -15,6 +15,7 @@ const __dirname = path.dirname(__filename);
  * @returns {Promise} resolves to list of paths
  */
 function findMjsFiles(directory) {
+  console.log("Scanning " + directory);
   const filePaths = glob.glob(directory + "/**/*.mjs");
   return filePaths;
 }
@@ -40,6 +41,7 @@ function loadFiles(filePaths) {
   return Promise.all(
     filePaths.map((fp) => {
       let fpRel = getRelPath(__dirname, fp);
+      console.log("importing " + fpRel);
       return import(fpRel).then((mod) => [fp, mod]);
     }),
   );
@@ -56,6 +58,7 @@ function getExports(files_modules, outDir) {
   for (const [fp, mod] of files_modules) {
     for (const [name, obj] of Object.entries(mod)) {
       const fpRel = getRelPath(outDir, fp);
+      console.log("Found export: " + name);
       exports.push({ relPath: fpRel, name: name, object: obj });
     }
   }
@@ -69,13 +72,15 @@ function getExports(files_modules, outDir) {
  */
 function extractDivIds(filepathHtml) {
   // Read the HTML file
-  const html = fs.readFileSync(filepathHtml, "utf8");
+  console.log("loading " + filepathHtml);
+  const html = readFile(filepathHtml);
   const dom = new JSDOM(html);
   // Extract div ids
   const divIds = [];
   dom.window.document.querySelectorAll("*").forEach((e) => {
     const id = e.id.trim();
     if (id) {
+      console.log("found id: " + id);
       divIds.push(id);
     }
   });
@@ -83,4 +88,22 @@ function extractDivIds(filepathHtml) {
   return divIds;
 }
 
-export { getExports, findMjsFiles, loadFiles, getRelPath, extractDivIds };
+function readFile(filePath) {
+  console.log("Reading " + filePath);
+  return fs.readFileSync(filePath, "utf8");
+}
+
+function writeFile(filePath, text) {
+  console.log("Writing " + filePath);
+  return fs.writeFileSync(filePath, text, "utf8");
+}
+
+export {
+  getExports,
+  findMjsFiles,
+  loadFiles,
+  getRelPath,
+  extractDivIds,
+  readFile,
+  writeFile,
+};

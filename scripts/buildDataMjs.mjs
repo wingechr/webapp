@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 "use strict";
 
-import fs from "fs";
+import { writeFile, readFile } from "./utils/index.mjs";
 
 const [_node, _script, inJson, outJs] = process.argv;
 
-let text = fs.readFileSync(inJson, "utf8");
+let text = readFile(inJson);
 text = "export default " + text + ";";
-fs.writeFileSync(outJs, text, "utf8");
+writeFile(outJs, text);

@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 "use strict";
 
-import fs from "fs";
 import path from "path";
 import {
   extractDivIds,
   getExports,
   loadFiles,
   findMjsFiles,
+  writeFile,
 } from "./utils/index.mjs";
 
 /**
@@ -25,6 +25,14 @@ function sortExports(exports, externalIds) {
     const obj = exp.object;
     const id = obj.id;
     const parentId = obj.parentId;
+    if (!id) {
+      console.error(obj);
+      throw new Error(`no id`);
+    }
+    if (!parentId) {
+      console.error(obj);
+      throw new Error(`no parentId`);
+    }
     if (tree[id]) {
       throw new Error(`duplicate id ${id}`);
     }
@@ -40,7 +48,7 @@ function sortExports(exports, externalIds) {
     if (!tree[parentId]) {
       if (externalIds.indexOf(parentId) == -1) {
         throw new Error(
-          `Not defined external id: ${parentId} not in ${externalIds}`,
+          `Not defined external id: ${parentId} not in: ${externalIds}`,
         );
       }
       tree[parentId] = [];
@@ -99,7 +107,7 @@ function save(items, filepath) {
   const text =
     imports.join("\n") + "\nexport default [\n" + exports.join(",\n") + "\n];";
 
-  fs.writeFileSync(filepath, text);
+  writeFile(filepath, text);
 }
 
 const [_node, _script, inputDir, indexHtmlPath, jsOut] = process.argv;
