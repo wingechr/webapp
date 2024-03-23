@@ -104,19 +104,11 @@ function sortExports(exports, data) {
 function save(items, filepath) {
   let imports = [];
   let exports = [];
-  for (const i in items) {
-    const it = items[i];
-    const filepathRel = it.relPath;
-    const basename = path
-      .basename(filepathRel)
-      .replace(".mjs", "")
-      .replace("-", "_");
-    const nameImp = it.name;
-    const name = `comp_${i}_${basename}_${it.id}`;
-    imports.push(`import {${nameImp} as ${name}} from "${filepathRel}";`);
+  for (const it of items) {
+    imports.push(`import {${it.name} as ${it.id}} from "${it.relPath}";`);
     exports.push(
       // eslint-disable-next-line
-      `{name: "${name}", dependencies: ${JSON.stringify(it.dependencies)}, callable: ${name}}`
+      `{name: "${it.id}", dependencies: ${JSON.stringify(it.dependencies)}, callable: ${it.id}}`
     );
   }
   const text =
