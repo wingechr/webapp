@@ -79,6 +79,11 @@ function sortExports(exports, externalIds) {
 
   walk(externalIds);
 
+  console.log("Sorted items:");
+  for (const id of orderedIds) {
+    console.log(id);
+  }
+
   // return objects
   const result = orderedIds.map((id) => byId[id]);
 
