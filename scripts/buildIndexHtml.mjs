@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const [_node, _script, uiJs, inHtml, outHtml, createStaticHtml] = process.argv;
+const [_node, _script, uiJs, inHtml, outHtml, createHtml] = process.argv;
 
 const uiJsRel = getRelPath(__dirname, path.resolve(uiJs));
 
@@ -17,7 +17,7 @@ let html = readFile(inHtml);
 
 import(uiJsRel).then((mod) => {
   const dom = new JSDOM(html);
-  if (createStaticHtml.toLowerCase() == "true") {
+  if (createHtml.toLowerCase() == "true") {
     for (const component of mod.default) {
       component.createHtml(dom.window);
     }

@@ -35,17 +35,17 @@ class App {
   /**
    * @param {Window} window
    * @param {array} uiComponents
-   * @param {boolean} createDynamicHtml
+   * @param {boolean} createHtml
    * @returns {App}
    */
-  init(window, uiComponents, createDynamicHtml) {
+  init(window, uiComponents, createHtml) {
     let initialData = this.defaultData;
     if (window) {
       console_log("INIT UI");
       for (const component of uiComponents) {
         this.uiComponents[component.id] = this.uiComponents;
 
-        component.init(window, this.graph, createDynamicHtml);
+        component.init(window, this.graph, createHtml);
 
         // also bind storage
         if (component.dataName && component.getValue) {

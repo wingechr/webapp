@@ -76,11 +76,11 @@ class Component {
    * attach javascript when starting up the app
    * @param {Window} window
    * @param {App} app
-   * @param {boolean} createDynamicHtml
+   * @param {boolean} createHtml
    * @returns {HTMLElement}
    */
-  init(window, app, createDynamicHtml) {
-    if (createDynamicHtml) {
+  init(window, app, createHtml) {
+    if (createHtml) {
       this.createHtml(window);
     }
 
@@ -100,8 +100,17 @@ class Component {
       app.addCallback([dataName], (value) => setValue(this, value));
     }
 
+    // user init HTML
+    initHtml(element);
+
     return element;
   }
+
+  /**
+   * user init
+   * @param {HTMLElement} element
+   */
+  initHtml(element) {}
 }
 
 class OutputComponent extends Component {
