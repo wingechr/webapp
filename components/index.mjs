@@ -41,7 +41,8 @@ class Component {
   }
 
   /**
-   *
+   * create static HTML
+   * !! Do not attach javascript events here, this should be done in init()
    * @param {Window} window
    * @returns {HTMLElement}
    */
@@ -72,11 +73,11 @@ class Component {
   }
 
   /**
-   *
+   * attach javascript when starting up the app
    * @param {Window} window
    * @param {App} app
    * @param {boolean} createDynamicHtml
-   * @returns {Component}
+   * @returns {HTMLElement}
    */
   init(window, app, createDynamicHtml) {
     if (createDynamicHtml) {
@@ -99,7 +100,7 @@ class Component {
       app.addCallback([dataName], (value) => setValue(this, value));
     }
 
-    return this;
+    return element;
   }
 }
 
