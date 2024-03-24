@@ -6,7 +6,7 @@ class Component {
    * @param {string} parentId
    * @param {string} tag
    * @param {string} id
-   * @param {string} className
+   * @param {array} classList
    * @param {string} dataName
    * @param {object} properties
    * @param {object} attributes
@@ -16,7 +16,7 @@ class Component {
     parentId,
     tag,
     id,
-    className,
+    classList,
     dataName,
     properties,
     attributes,
@@ -30,7 +30,7 @@ class Component {
     this.properties = properties || {};
     this.attributes = attributes || {};
     this.properties["id"] = id;
-    this.properties["className"] = className;
+    this.classList = classList || [];
     if (dataName) {
       this.attributes[nameAttributeName] = dataName;
     }
@@ -57,6 +57,8 @@ class Component {
 
     // create element
     const element = window.document.createElement(this.tag);
+    // set classes
+    element.classList.add(...this.classList);
 
     // set properties and attributes
     for (const [key, val] of Object.entries(this.properties)) {
@@ -136,9 +138,9 @@ class InputComponent extends OutputComponent {
 }
 
 class LabelOutputComponent extends OutputComponent {
-  constructor(parentId, id, className, dataName) {
+  constructor(parentId, id, classList, dataName) {
     const tag = "label";
-    super(parentId, tag, id, className, dataName);
+    super(parentId, tag, id, classList, dataName);
   }
 
   setValue(self, value) {
@@ -151,9 +153,9 @@ class LabelOutputComponent extends OutputComponent {
 }
 
 class IntInputComponent extends InputComponent {
-  constructor(parentId, id, className, dataName, min, max) {
+  constructor(parentId, id, classList, dataName, min, max) {
     const tag = "input";
-    super(parentId, tag, id, className, dataName, { min: min, max: max });
+    super(parentId, tag, id, classList, dataName, { min: min, max: max });
     this.min = min;
     this.max = max;
   }
