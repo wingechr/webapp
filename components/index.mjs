@@ -101,7 +101,7 @@ class Component {
     }
 
     // user init HTML
-    initHtml(element);
+    this.initHtml(element);
 
     return element;
   }
