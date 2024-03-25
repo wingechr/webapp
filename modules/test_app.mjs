@@ -3,7 +3,6 @@ import { describe, it } from "mocha";
 import { App } from "./app.mjs";
 import { JSDOM } from "jsdom";
 import Storage from "dom-storage";
-import { LabelOutputComponent } from "../components/index.mjs";
 
 describe("App", () => {
   const data = { d1: 2 };
@@ -14,15 +13,15 @@ describe("App", () => {
       callable: (p1) => p1 * p1,
     },
   ];
-  const uiComponents = [
-    new LabelOutputComponent("main", "id1", "my-class", "f1"),
-  ];
+  const uiComponents = [];
 
   it("should work without window", () => {
     const app = new App(data, functions);
 
     // init not called yet
-    assert.equal(app.graph.getValue("f1"), undefined);
+    assert.throw(() => {
+      app.graph.getValue("f1");
+    });
 
     app.init();
 

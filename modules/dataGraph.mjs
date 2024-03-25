@@ -13,6 +13,10 @@ export class DataGraph {
     // array[string]: ordered array of names of (mutable) function nodes
     this._updateSequence = [];
     this._callbacks = []; // array[callback object]
+    // TODO: find a better solution: (only) on first setData() =>
+    // also set _dataFromFunctionsWithoutDependencies
+    this._isInitialized = false;
+    this._dataFromFunctionsWithoutDependencies = {};
   }
 
   /**
@@ -50,6 +54,9 @@ export class DataGraph {
    * @returns {*}
    */
   getValue(name) {
+    if (!this._isInitialized) {
+      throw new Error("DataGraph not initialized (with setData)");
+    }
     return this._getNodeValue(name);
   }
 
@@ -75,6 +82,15 @@ export class DataGraph {
       }
     };
 
+    if (!this._isInitialized) {
+      for (const [name, value] of Object.entries(
+        this._dataFromFunctionsWithoutDependencies,
+      )) {
+        _changeNodeIfValueChanged(name, value);
+      }
+      this._isInitialized = true;
+    }
+
     // all data entries must be existing nodes without update functions
     for (const [name, value] of Object.entries(data)) {
       // node must exist
@@ -92,6 +108,7 @@ export class DataGraph {
     for (const name of this._updateSequence) {
       const node = this._nodes[name];
       const dependencies = node.dependencies;
+
       if (dependencies.some((p) => changedNodes.has(p))) {
         const fun = node.callable;
         const args = dependencies.map((p) => this._getNodeValue(p));
@@ -124,11 +141,14 @@ export class DataGraph {
    * @param {Function} callable
    */
   addFunction(name, dependencies, callable) {
-    if (!dependencies) {
-      throw new Error(`function without dependencies`);
-    }
     if (!callable) {
       throw new Error(`missing function`);
+    }
+    if (dependencies.length == 0) {
+      this.addNode(name);
+      const constValue = callable.apply();
+      this._dataFromFunctionsWithoutDependencies[name] = constValue;
+      return;
     }
     console_log(`DG: add function: ${name}(${dependencies})`);
 

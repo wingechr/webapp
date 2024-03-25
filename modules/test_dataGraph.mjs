@@ -61,4 +61,16 @@ describe("DataGraph", () => {
       // f3: not called again, because f2 has not changed
     ]);
   });
+
+  it("should handle functions without dependencies corretcly", () => {
+    const dg = new DataGraph();
+    dg.addNode("p");
+    dg.addFunction("f0", [], () => 10); // function w/o dependencies
+    dg.addFunction("F1", ["f0", "p"], (f0, p) => f0 * p);
+
+    dg.setData({ p: 1 });
+
+    assert.equal(dg.getValue("f0"), 10);
+    assert.equal(dg.getValue("F1"), 10);
+  });
 });
