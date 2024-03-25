@@ -57,6 +57,22 @@ function sortExports(exports, data) {
     exp.id = exp.name == "default" ? exp.nameDef : exp.name;
   }
 
+  // check dependencies
+  const allNames = new Set();
+  for (const exp of exports) {
+    allNames.add(exp.id);
+  }
+  for (const id in data) {
+    allNames.add(id);
+  }
+  for (const exp of exports) {
+    for (const dep of exp.dependencies) {
+      if (!allNames.has(dep)) {
+        throw new Error(`Missing dependency ${dep} for ${exp.id}`);
+      }
+    }
+  }
+
   while (todo.length > 0) {
     const exp = todo.shift(); // pop first element
     /* if all dependencies are in dataIds: push on results,
