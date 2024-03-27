@@ -32,7 +32,26 @@ describe("App", () => {
     const app = new App(data, functions);
 
     const dom = new JSDOM('<html><body id="main"></body></html>');
+
     global.localStorage = new Storage(null, { strict: true });
+    global.localStorage = new Storage(null, { strict: true });
+    global.window = dom.window;
+    global.document = dom.window.document;
+    // simulate observers
+    class Observer {
+      observe() {
+        // do nothing
+      }
+      unobserve() {
+        // do nothing
+      }
+      disconnect() {
+        // do nothing
+      }
+    }
+    global.ResizeObserver = Observer;
+    global.MutationObserver = Observer;
+
     app.init(dom.window, uiComponents, true);
 
     assert.equal(app.graph.getValue("f1"), 2 * 2);
