@@ -38,8 +38,19 @@ class Component {
      * @type {HTMLElement}
      */
     this.element = null; // in init();
+    this.childCount = 0; // for auto generating child ids in getNextChildId
   }
 
+  getNextChildId(suffix) {
+    this.childCount += 1;
+    // 3 digit zero padded
+    const num = this.childCount.toString().padStart(3, "0");
+    let result = `${this.id}-${num}`;
+    if (suffix) {
+      result += suffix;
+    }
+    return result;
+  }
   /**
    * create static HTML
    * !! Do not attach javascript events here, this should be done in init()
