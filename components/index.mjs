@@ -1,3 +1,5 @@
+import { DataGraph } from "../index.mjs";
+
 const nameAttributeName = "data-name";
 
 class Component {
@@ -88,11 +90,11 @@ class Component {
   /**
    * attach javascript when starting up the app
    * @param {Window} window
-   * @param {App} app
+   * @param {DataGraph} dataGraph
    * @param {boolean} createHtml
    * @returns {HTMLElement}
    */
-  init(window, app, createHtml) {
+  init(window, dataGraph, createHtml) {
     if (createHtml) {
       this.createHtml(window);
     }
@@ -104,13 +106,13 @@ class Component {
 
     if (dataName && getValue && this.eventName) {
       element.addEventListener(this.eventName, (_event) => {
-        app.setValue(dataName, getValue(this));
+        dataGraph.setValue(dataName, getValue(this));
       });
     }
 
     const setValue = this.setValue;
     if (dataName && setValue) {
-      app.addCallback([dataName], (value) => setValue(this, value));
+      dataGraph.addCallback([dataName], (value) => setValue(this, value));
     }
 
     // user init HTML
