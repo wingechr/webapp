@@ -6,6 +6,14 @@ import {
   Component,
   InputComponent,
   OutputComponent,
+  createHtml,
 } from "./components/index.mjs";
 
-export { App, DataGraph, Component, InputComponent, OutputComponent };
+export {
+  App,
+  DataGraph,
+  Component,
+  InputComponent,
+  OutputComponent,
+  createHtml,
+};

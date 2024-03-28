@@ -2,6 +2,48 @@ import { DataGraph } from "../index.mjs";
 
 const nameAttributeName = "data-name";
 
+export function createHtml(
+  window,
+  parentId,
+  tag,
+  id,
+  classList,
+  properties,
+  attributes,
+) {
+  if (window.document.getElementById(id)) {
+    throw new Error(`Wlement already exists: ${id}`);
+  }
+  const parent = window.document.getElementById(parentId);
+  if (!parent) {
+    throw new Error(`Parent element does not exist: ${parentId}`);
+  }
+
+  // create element
+  const element = window.document.createElement(tag);
+  // set classes
+  if (classList) {
+    element.classList.add(...classList);
+  }
+
+  // set properties and attributes
+  if (properties) {
+    for (const [key, val] of Object.entries(properties)) {
+      element[key] = val;
+    }
+  }
+  if (attributes) {
+    for (const [key, val] of Object.entries(attributes)) {
+      element.setAttribute(key, val);
+    }
+  }
+
+  // add to parent
+  parent.appendChild(element);
+
+  return element;
+}
+
 class Component {
   /**
    *
@@ -60,31 +102,15 @@ class Component {
    * @returns {HTMLElement}
    */
   createHtml(window) {
-    if (window.document.getElementById(this.id)) {
-      throw new Error(`Wlement already exists: ${this.id}`);
-    }
-    const parent = window.document.getElementById(this.parentId);
-    if (!parent) {
-      throw new Error(`Parent element does not exist: ${this.parentId}`);
-    }
-
-    // create element
-    const element = window.document.createElement(this.tag);
-    // set classes
-    element.classList.add(...this.classList);
-
-    // set properties and attributes
-    for (const [key, val] of Object.entries(this.properties)) {
-      element[key] = val;
-    }
-    for (const [key, val] of Object.entries(this.attributes)) {
-      element.setAttribute(key, val);
-    }
-
-    // add to parent
-    parent.appendChild(element);
-
-    return element;
+    return createHtml(
+      window,
+      this.parentId,
+      this.tag,
+      this.id,
+      this.classList,
+      this.properties,
+      this.attributes,
+    );
   }
 
   /**
